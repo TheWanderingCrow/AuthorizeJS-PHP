@@ -29,6 +29,8 @@ $payment = new thewanderingcrow\Payment(api_login_id: $api_login_id, transaction
 You may then insert a payment button into your template with
 `$payment->insertPaymentButton();`
 
+The data passed back to callback should be processed with `$payment->processCard()`
+
 Optional Parameters are:
 isTest: set this to `true` if you are using the testing endpoint
 buttonText: default is "Pay Now"
