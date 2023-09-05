@@ -1,0 +1,28 @@
+{
+    "name": "thewanderingcrow/authorize-js-php",
+    "description": "A PHP implementation of Accept.js by Authorize.Net",
+    "type": "library",
+    "license": "GNU General Public v3",
+    "autoload": {
+        "psr-4": {
+            "thewanderingcrow\\AuthorizeJsPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Patrick Menking",
+            "email": "contact@wanderingcrow.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "authorizenet/authorizenet": "^2.0",
+        "league/omnipay": "^3.2",
+        "academe/omnipay-authorizenetapi": "^3.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
