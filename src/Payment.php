@@ -91,14 +91,14 @@ class Payment
 
     public function processCard($amount, $customerId, $currency = 'USD', $customerType = \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL)
     {
-        $gateway = Omnipay\Omnipay::create('AuthorizeNetApi_Api');
+        $gateway = \Omnipay\Omnipay::create('AuthorizeNetApi_Api');
 
         $gateway->setAuthName($this->api_login_id);
         $gateway->setTransactionKey($this->transaction_key);
         $gateway->setTestMode($this->isTest);
 
         // this is left blank because we are using tokenized card data
-        $creditCard = new Omnipay\Common\CreditCard([
+        $creditCard = new \Omnipay\Common\CreditCard([
             // Swiped tracks can be provided instead, if the card is present.
             'number' => '',
             'expiryMonth' => '',
