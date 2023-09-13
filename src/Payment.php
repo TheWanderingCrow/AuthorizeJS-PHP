@@ -66,6 +66,16 @@ class Payment
     </script>
     HEREDOC;
 
+    /**
+     * Construct a Payment Object
+     * 
+     * @param String $api_login_id Authorize.NET login id
+     * @param String $transaction_key Authorize.NET transaction key
+     * @param String $callbackUrl Url that credit card capture will call to finish processing
+     * @param ?bool $isTest false uses Authorize.NET production servers; true uses the sandbox servers
+     * @param ?String $buttonText default is "Pay Now"
+     * @param ?String $style Inline CSS styling for buttin
+     */
     public function __construct(string $api_login_id, string $transaction_key, string $callbackUrl, ?bool $isTest = false, ?string $buttonText = "Pay Now", ?string $style = "")
     {
         $this->api_login_id = $api_login_id;
@@ -76,6 +86,11 @@ class Payment
         $this->style = $style;
     }
 
+    /**
+     * Generates the HTML/JS required for a payment button.  
+     * 
+     * @return String
+     */
     public function insertPaymentButton()
     {
         $form = $this->bind_to_template([
@@ -89,6 +104,16 @@ class Payment
         echo $form;
     }
 
+        /**
+     * Attempts to apply an amount to a previously captured card.
+     * 
+     * @param String $amount The amount to charge to the card
+     * @param String $customerId The customer ID that will be recorded in this transaction
+     * @param String $currency defaults to 'USD'
+     * @param $customerType see Authorize.NET documentation.  defaults to \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL
+     * 
+     * @return Array attempt response
+     */
     public function processCard($amount, $customerId, $currency = 'USD', $customerType = \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL)
     {
         $gateway = \Omnipay\Omnipay::create('AuthorizeNetApi_Api');
@@ -124,7 +149,10 @@ class Payment
 
         return $response->getData();
     }
-
+    
+    /**
+     * 
+     */
     private function getPublicKey()
     {
         /* Create a merchantAuthenticationType object with authentication details
@@ -155,6 +183,9 @@ class Payment
         }
     }
 
+    /**
+     * 
+     */
     private function bind_to_template($replacements, $template)
     {
         return preg_replace_callback(
