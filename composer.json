@@ -5,7 +5,7 @@
     "license": "GNU General Public v3",
     "autoload": {
         "psr-4": {
-            "thewanderingcrow\\Authorize-js-php\\": "src/"
+            "thewanderingcrow\\": "src/"
         }
     },
     "authors": [
