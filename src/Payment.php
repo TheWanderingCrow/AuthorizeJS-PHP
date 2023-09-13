@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
 namespace thewanderingcrow;
+
+require __DIR__ . '/../vendor/autoload.php';
 
 use Academe\AuthorizeNet;
 use net\authorize\api\contract\v1 as AnetAPI;
