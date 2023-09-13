@@ -2,8 +2,6 @@
 
 namespace thewanderingcrow;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 use Academe\AuthorizeNet;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
