@@ -3,9 +3,10 @@
     "description": "A PHP implementation of Accept.js by Authorize.Net",
     "type": "library",
     "license": "GNU General Public v3",
+    "version": "1.0.1",
     "autoload": {
         "psr-4": {
-            "thewanderingcrow\\Authorize-js-php\\": "src/"
+            "thewanderingcrow\\": "src/"
         }
     },
     "authors": [

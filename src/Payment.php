@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
 namespace thewanderingcrow;
 
 use Academe\AuthorizeNet;
@@ -68,6 +66,16 @@ class Payment
     </script>
     HEREDOC;
 
+    /**
+     * Construct a Payment Object
+     * 
+     * @param String $api_login_id Authorize.NET login id
+     * @param String $transaction_key Authorize.NET transaction key
+     * @param String $callbackUrl Url that credit card capture will call to finish processing
+     * @param ?bool $isTest false uses Authorize.NET production servers; true uses the sandbox servers
+     * @param ?String $buttonText default is "Pay Now"
+     * @param ?String $style Inline CSS styling for buttin
+     */
     public function __construct(string $api_login_id, string $transaction_key, string $callbackUrl, ?bool $isTest = false, ?string $buttonText = "Pay Now", ?string $style = "")
     {
         $this->api_login_id = $api_login_id;
@@ -78,6 +86,11 @@ class Payment
         $this->style = $style;
     }
 
+    /**
+     * Generates the HTML/JS required for a payment button.  
+     * 
+     * @return String
+     */
     public function insertPaymentButton()
     {
         $form = $this->bind_to_template([
@@ -91,16 +104,26 @@ class Payment
         echo $form;
     }
 
+        /**
+     * Attempts to apply an amount to a previously captured card.
+     * 
+     * @param String $amount The amount to charge to the card
+     * @param String $customerId The customer ID that will be recorded in this transaction
+     * @param String $currency defaults to 'USD'
+     * @param $customerType see Authorize.NET documentation.  defaults to \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL
+     * 
+     * @return Array attempt response
+     */
     public function processCard($amount, $customerId, $currency = 'USD', $customerType = \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL)
     {
-        $gateway = Omnipay\Omnipay::create('AuthorizeNetApi_Api');
+        $gateway = \Omnipay\Omnipay::create('AuthorizeNetApi_Api');
 
         $gateway->setAuthName($this->api_login_id);
         $gateway->setTransactionKey($this->transaction_key);
         $gateway->setTestMode($this->isTest);
 
         // this is left blank because we are using tokenized card data
-        $creditCard = new Omnipay\Common\CreditCard([
+        $creditCard = new \Omnipay\Common\CreditCard([
             // Swiped tracks can be provided instead, if the card is present.
             'number' => '',
             'expiryMonth' => '',
@@ -126,7 +149,10 @@ class Payment
 
         return $response->getData();
     }
-
+    
+    /**
+     * 
+     */
     private function getPublicKey()
     {
         /* Create a merchantAuthenticationType object with authentication details
@@ -157,6 +183,9 @@ class Payment
         }
     }
 
+    /**
+     * 
+     */
     private function bind_to_template($replacements, $template)
     {
         return preg_replace_callback(
