@@ -71,42 +71,41 @@ class Payment
      * 
      * @param String $api_login_id Authorize.NET login id
      * @param String $transaction_key Authorize.NET transaction key
-     * @param String $callbackUrl Url that credit card capture will call to finish processing
      * @param ?bool $isTest false uses Authorize.NET production servers; true uses the sandbox servers
-     * @param ?String $buttonText default is "Pay Now"
-     * @param ?String $style Inline CSS styling for buttin
+     * 
      */
-    public function __construct(string $api_login_id, string $transaction_key, string $callbackUrl, ?bool $isTest = false, ?string $buttonText = "Pay Now", ?string $style = "")
+    public function __construct(string $api_login_id, string $transaction_key, ?bool $isTest = false)
     {
         $this->api_login_id = $api_login_id;
         $this->transaction_key = $transaction_key;
-        $this->callbackUrl = $callbackUrl;
-        $this->buttonText = $buttonText;
         $this->isTest = $isTest;
-        $this->style = $style;
     }
 
     /**
      * Generates the HTML/JS required for a payment button.  
+     * @param String $callbackUrl URL that credit card capture will call to finish processing
+     * @param ?String $buttonText default is "Pay Now"
+     * @param ?String $style Inline CSS styling for button
      * 
      * @return String
      */
-    public function insertPaymentButton()
+    public function insertPaymentButton(string $callbackUrl, ?string $buttonText = "Pay Now", ?string $style = "")
     {
         $form = $this->bind_to_template([
             'apiId' => $this->api_login_id,
             'publicKey' => $this->getPublicKey(),
-            'callbackUrl' => $this->callbackUrl,
-            'buttonText' => $this->buttonText,
-            'style'=>$this->style
+            'callbackUrl' => $callbackUrl,
+            'buttonText' => $buttonText,
+            'style'=>$style
         ], $this->formTemplate);
 
         echo $form;
     }
 
-        /**
+    /**
      * Attempts to apply an amount to a previously captured card.
      * 
+     * @param Array $authData The data returned by the callback event
      * @param String $amount The amount to charge to the card
      * @param String $customerId The customer ID that will be recorded in this transaction
      * @param String $currency defaults to 'USD'
@@ -114,7 +113,7 @@ class Payment
      * 
      * @return Array attempt response
      */
-    public function processCard($amount, $customerId, $currency = 'USD', $customerType = \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL)
+    public function processCard($authData, $amount, $customerId, $currency = 'USD', $customerType = \Academe\AuthorizeNet\Request\Model\Customer::CUSTOMER_TYPE_INDIVIDUAL)
     {
         $gateway = \Omnipay\Omnipay::create('AuthorizeNetApi_Api');
 
@@ -143,8 +142,8 @@ class Payment
             // Additional optional attributes:
             'customerId' => $customerId,
             'customerType' => $customerType,
-            'opaqueDataDescriptor' => $_POST['dataDescriptor'],
-            'opaqueDataValue' => $_POST['dataValue'],
+            'opaqueDataDescriptor' => $authData['dataDescriptor'],
+            'opaqueDataValue' => $authData['dataValue'],
         ])->send();
 
         return $response->getData();

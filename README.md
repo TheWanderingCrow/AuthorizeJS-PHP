@@ -14,22 +14,25 @@ Add the following to your composer.json
 ```
 ## How to use
 Create a new payment object with required parameters
-```
+```php
 <?php
 
 require __DIR__ . "/vendor/autoload.php";
 
 $api_login_id = "test";
 $transaction_key = "test";
-$callback_url = "https://example.net";
 
-$payment = new thewanderingcrow\Payment(api_login_id: $api_login_id, transaction_key: $transaction_key, callbackUrl: $callback_url);
+$payment = new thewanderingcrow\Payment(api_login_id: $api_login_id, transaction_key: $transaction_key);
 ```
 
 You may then insert a payment button into your template with
-`$payment->insertPaymentButton();`
+```php
+$callbackUrl = "https://example.com/callback";
 
-The data passed back to callback should be processed with `$payment->processCard()`
+$payment->insertPaymentButton(callbackUrl: $callbackUrl);
+```
+
+The data passed via $_POST to callback should be processed with `$payment->processCard($authData)`
 
 Optional Parameters are:
 isTest: set this to `true` if you are using the testing endpoint
